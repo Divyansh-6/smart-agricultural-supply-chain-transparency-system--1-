@@ -1,0 +1,7 @@
+{
+  "name": "Smart Agricultural Supply Chain Transparency System",
+  "description": "A web application that combines mock Blockchain, IoT sensors, Web dashboards, and QR code verification to enable farm-to-consumer transparency in the agricultural supply chain.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
