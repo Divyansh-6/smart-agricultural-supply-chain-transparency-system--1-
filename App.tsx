@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 import DashboardPage from './pages/DashboardPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
 import ConsumerViewPage from './pages/ConsumerViewPage';
@@ -20,6 +21,7 @@ function App() {
         <HashRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
             <Route path="/consumer/:batchId" element={<ConsumerViewPage />} />
             
             <Route element={<Layout />}>
