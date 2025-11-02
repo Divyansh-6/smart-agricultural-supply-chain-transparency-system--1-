@@ -1,48 +1,40 @@
 
-import React, { useState, FormEvent, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { MOCK_USERS } from '../services/mockApi';
+import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Leaf } from 'lucide-react';
 
-const LoginPage: React.FC = () => {
+const RegistrationPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('FARMER');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || '/dashboard';
-  
-  useEffect(() => {
-    if (isAuthenticated) {
-        navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, from]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     try {
-      const user = await login(email, password);
-      if (user) {
-        navigate(from, { replace: true });
+      const response = await fetch('http://localhost:3001/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      if (response.ok) {
+        navigate('/verify-otp', { state: { email } });
       } else {
-        setError('Invalid email or password.');
+        const data = await response.json();
+        setError(data.error || 'An error occurred during registration.');
       }
     } catch (err) {
-      setError('An error occurred during login.');
+      setError('An error occurred during registration.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleQuickLogin = (emailValue: string) => {
-    setEmail(emailValue);
-    setPassword('password123'); // Mock password
   };
 
   return (
@@ -51,10 +43,10 @@ const LoginPage: React.FC = () => {
         <div className="text-center">
             <Leaf className="mx-auto w-12 h-12 text-primary" />
             <h1 className="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
-                Welcome to AgriChain
+                Create an Account
             </h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Transparency from Farm to Table
+                Join AgriChain Today
             </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -90,6 +82,23 @@ const LoginPage: React.FC = () => {
               placeholder="Password"
             />
           </div>
+          <div>
+            <label htmlFor="role" className="sr-only">
+              Role
+            </label>
+            <select
+                id="role"
+                name="role"
+                required
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+            >
+                <option value="FARMER">Farmer</option>
+                <option value="DISTRIBUTOR">Distributor</option>
+                <option value="CONSUMER">Consumer</option>
+            </select>
+            </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
@@ -99,30 +108,13 @@ const LoginPage: React.FC = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-focus focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:bg-gray-400 dark:disabled:bg-gray-600"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </button>
           </div>
         </form>
-
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>For demo purposes, use a quick login:</p>
-          <div className="flex justify-center space-x-2 mt-2">
-            {MOCK_USERS.map(u => (
-              <button key={u.id} onClick={() => handleQuickLogin(u.email)} className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 capitalize">
-                {u.role.toLowerCase()}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center text-sm">
-          <Link to="/register" className="font-medium text-primary hover:text-primary-focus">
-            Don't have an account? Sign up
-          </Link>
-        </div>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default RegistrationPage;
