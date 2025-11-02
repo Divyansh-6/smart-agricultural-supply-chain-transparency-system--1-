@@ -25,7 +25,7 @@ const RegistrationPage: React.FC = () => {
       });
 
       if (response.ok) {
-        navigate('/login');
+        navigate('/verify-otp', { state: { email } });
       } else {
         const data = await response.json();
         setError(data.error || 'An error occurred during registration.');
