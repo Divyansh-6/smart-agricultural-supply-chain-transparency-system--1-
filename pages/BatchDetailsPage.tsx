@@ -4,6 +4,7 @@ import { getBatchById, getIotData, updateBatchStage } from '../services/mockApi'
 import { Batch, IoTData, Role, StageName } from '../types';
 import IoTChart from '../components/IoTChart';
 import Timeline from '../components/Timeline';
+import Map from '../components/Map';
 // Fix: The 'qrcode.react' library exports named components like QRCodeSVG instead of a default export.
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '../hooks/useAuth';
@@ -16,7 +17,6 @@ const stageTransitions: Record<Role, Partial<Record<StageName, StageName>>> = {
     },
     [Role.CONSUMER]: {
         [StageName.IN_TRANSIT_TO_CONSUMER]: StageName.AT_CONSUMER,
-[StageName.AT_CONSUMER]: StageName.AVAILABLE_FOR_SALE,
     },
     [Role.RETAILER]: {}
 };
@@ -88,6 +88,7 @@ const BatchDetailsPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-8">
             <IoTChart data={iotData} />
             <Timeline history={batch.history} />
+            <Map history={batch.history} />
         </div>
         <div className="space-y-8">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg text-center">

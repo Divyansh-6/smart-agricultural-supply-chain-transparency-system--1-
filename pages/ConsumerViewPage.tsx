@@ -5,6 +5,7 @@ import { getBatchById, getIotData } from '../services/mockApi';
 import { Batch, IoTData } from '../types';
 import IoTChart from '../components/IoTChart';
 import Timeline from '../components/Timeline';
+import Map from '../components/Map';
 import { Leaf } from 'lucide-react';
 
 const ConsumerViewPage: React.FC = () => {
@@ -66,6 +67,7 @@ const ConsumerViewPage: React.FC = () => {
 
           <IoTChart data={iotData} />
           <Timeline history={batch.history} />
+          <Map history={batch.history} />
 
         </div>
       </main>
